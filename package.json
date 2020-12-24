@@ -1,0 +1,30 @@
+{
+	"name": "devconnector",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"server": "nodemon server.js",
+		"client": "npm start --prefix client",
+		"dev": "concurrently \"npm run server\" \"npm run client\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^5.3.0",
+		"dotenv": "^8.2.0",
+		"nodemon": "^2.0.6"
+	},
+	"dependencies": {
+		"axios": "^0.21.0",
+		"bcryptjs": "^2.4.3",
+		"express": "^4.17.1",
+		"express-validator": "^6.7.0",
+		"gravatar": "^1.8.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.10.13",
+		"uuid": "^8.3.1"
+	},
+	"proxy": "http://localhost:5000"
+}
