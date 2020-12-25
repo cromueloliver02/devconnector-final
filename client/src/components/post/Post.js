@@ -79,7 +79,7 @@ const Post = ({
 				<TransitionGroup>
 					{post.comments.map(comment => (
 						<CSSTransition
-							key={comment.id}
+							key={comment._id}
 							timeout={500}
 							classNames='item'
 						>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createProfile, getCurrentProfile } from '../../_actions/profile';
+import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 
 const EditProfile = ({
@@ -118,6 +119,10 @@ const EditProfile = ({
 		});
 		// eslint-disable-next-line
 	}, [loading]);
+
+	if (loading) {
+		return <Spinner />;
+	}
 
 	const {
 		company,

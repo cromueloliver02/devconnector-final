@@ -1,11 +1,7 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
 const app = express();
-
-// config file
-dotenv.config({ path: './config/config.env' });
 
 // middlewares
 app.use(express.json({ extended: false }));

@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const config = require('config');
+const jwtSecret = config.get('JWTSecret');
 const auth = require('../../middlewares/auth');
 
 const User = require('../../models/User');
@@ -66,7 +68,7 @@ router.post(
 			};
 			jwt.sign(
 				payload,
-				process.env.JWT_SECRET,
+				jwtSecret,
 				{
 					expiresIn: 3600
 				},
@@ -75,7 +77,8 @@ router.post(
 					res.status(200).json({ token });
 				}
 			);
-		} catch (err) {T
+		} catch (err) {
+			T;
 			console.log(err.message);
 			res.status(500).send('Server error');
 		}
