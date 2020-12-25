@@ -5,9 +5,11 @@ import {
 	GET_POST,
 	POST_ERROR,
 	UPDATE_LIKES,
+	UPDATE_LIKES_BY_SINGLE_POST,
 	DELETE_POST,
 	CREATE_POST,
 	ADD_COMMENT,
+	DELETE_COMMENT,
 	SET_LOADING_POST
 } from './types';
 
@@ -81,6 +83,40 @@ export const removeLike = postId => async dispatch => {
 	}
 };
 
+export const addLikeBySinglePost = postId => async dispatch => {
+	try {
+		const res = await axios.put(`/api/posts/like/${postId}`);
+
+		dispatch({
+			type: UPDATE_LIKES_BY_SINGLE_POST,
+			payload: res.data
+		});
+	} catch (err) {
+		console.error(err.message);
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+export const removeLikeBySinglePost = postId => async dispatch => {
+	try {
+		const res = await axios.put(`/api/posts/unlike/${postId}`);
+
+		dispatch({
+			type: UPDATE_LIKES_BY_SINGLE_POST,
+			payload: res.data
+		});
+	} catch (err) {
+		console.error(err.message);
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
 export const createPost = formData => async dispatch => {
 	const config = {
 		headers: {
@@ -143,9 +179,29 @@ export const addComment = (postId, text) => async dispatch => {
 			type: ADD_COMMENT,
 			payload: res.data
 		});
+
+		dispatch(setAlert('Comment added', 'success'));
 	} catch (err) {
 		console.error(err.message);
-		console.error(err.response.data.msg);
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+export const deleteComment = (postId, commentId) => async dispatch => {
+	try {
+		await axios.delete(`/api/posts/${postId}/comment/${commentId}`);
+
+		dispatch({
+			type: DELETE_COMMENT,
+			payload: commentId
+		});
+
+		dispatch(setAlert('Comment deleted', 'success'));
+	} catch (err) {
+		console.error(err.message);
 		dispatch({
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }

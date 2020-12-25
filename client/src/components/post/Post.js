@@ -2,13 +2,25 @@ import React, { Fragment, useEffect } from 'react';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getPost } from '../../_actions/post';
+import {
+	getPost,
+	addLikeBySinglePost,
+	removeLikeBySinglePost
+} from '../../_actions/post';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import CommentForm from '../post/CommentForm';
 import CommentItem from '../post/CommentItem';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 
-const Post = ({ auth, post: { post, loading }, match, getPost }) => {
+const Post = ({
+	post: { post, loading },
+	auth,
+	match,
+	getPost,
+	addLikeBySinglePost,
+	removeLikeBySinglePost
+}) => {
 	useEffect(() => {
 		getPost(match.params.postId);
 	}, [getPost, match.params.postId]);
@@ -17,7 +29,12 @@ const Post = ({ auth, post: { post, loading }, match, getPost }) => {
 		return <Spinner />;
 	}
 
-	const { _id, user, name, avatar, text, date } = post;
+	const { _id, user, name, avatar, likes, text, date } = post;
+
+	const isLiked =
+		auth.user !== null
+			? likes.some(like => like.user === auth.user._id)
+			: false;
 
 	return (
 		<Fragment>
@@ -36,15 +53,40 @@ const Post = ({ auth, post: { post, loading }, match, getPost }) => {
 					<p className='post-date'>
 						<Moment format='MM/DD/YYYY'>{date}</Moment>
 					</p>
+					<button
+						type='button'
+						className='btn btn-light'
+						onClick={() => addLikeBySinglePost(_id)}
+					>
+						<i
+							className={`fas fa-thumbs-up ${isLiked && 'text-primary'}`}
+						></i>
+						{likes.length > 0 && <span> {likes.length}</span>}
+					</button>
+					<button
+						type='button'
+						className='btn btn-light'
+						onClick={() => removeLikeBySinglePost(_id)}
+					>
+						<i className='fas fa-thumbs-down'></i>
+					</button>
 				</div>
 			</div>
 
 			<CommentForm postId={_id} />
 
-			<div className='post bg-white p-1 my-1'>
-				{post.comments.map(comment => (
-					<CommentItem key={comment._id} comment={comment} />
-				))}
+			<div className='comment'>
+				<TransitionGroup>
+					{post.comments.map(comment => (
+						<CSSTransition
+							key={comment.id}
+							timeout={500}
+							classNames='item'
+						>
+							<CommentItem comment={comment} postId={_id} />
+						</CSSTransition>
+					))}
+				</TransitionGroup>
 			</div>
 		</Fragment>
 	);
@@ -53,7 +95,8 @@ const Post = ({ auth, post: { post, loading }, match, getPost }) => {
 Post.propTypes = {
 	getPost: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
-	auth: PropTypes.object.isRequired
+	addLikeBySinglePost: PropTypes.func.isRequired,
+	removeLikeBySinglePost: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -61,4 +104,8 @@ const mapStateToProps = state => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { getPost })(Post);
+export default connect(mapStateToProps, {
+	getPost,
+	addLikeBySinglePost,
+	removeLikeBySinglePost
+})(Post);
