@@ -89,7 +89,11 @@ const Register = ({
 						// minLength='6'
 					/>
 				</div>
-				<button type='submit' className='btn btn-primary'>
+				<button
+					type='submit'
+					className='btn btn-primary'
+					disabled={loading}
+				>
 					{loading ? (
 						<Fragment>
 							<i className='fas fa-circle-notch fa-spin'></i> loading ...
