@@ -52,7 +52,7 @@ export const register = (
 	};
 
 	try {
-		const res = await axios.post('/api/users', body, config);
+		await axios.post('/api/users', body, config);
 
 		dispatch({
 			type: REGISTER_SUCCESS
