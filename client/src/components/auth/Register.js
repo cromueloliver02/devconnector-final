@@ -29,6 +29,13 @@ const Register = ({
 			setAlert('Passwords does not match...', 'danger');
 		} else {
 			register({ name, email, password }, history);
+
+			setFormData({
+				name: '',
+				email: '',
+				password: '',
+				password2: ''
+			});
 		}
 
 		e.preventDefault();

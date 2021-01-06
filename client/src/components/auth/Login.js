@@ -19,6 +19,11 @@ const Login = ({ auth: { isAuthenticated, loading }, login }) => {
 	const onSubmit = e => {
 		login(email, password);
 
+		setFormData({
+			email: '',
+			password: ''
+		});
+
 		e.preventDefault();
 	};
 
