@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { login } from '../../_actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({ isAuthenticated, login }) => {
+const Login = ({ auth: { isAuthenticated, loading }, login }) => {
 	const [formData, setFormData] = useState({
 		email: '',
 		password: ''
@@ -52,7 +52,19 @@ const Login = ({ isAuthenticated, login }) => {
 						minLength='6'
 					/>
 				</div>
-				<input type='submit' className='btn btn-primary' value='Login' />
+				<button
+					type='submit'
+					className='btn btn-primary'
+					disabled={loading}
+				>
+					{loading ? (
+						<Fragment>
+							<i className='fas fa-circle-notch fa-spin'></i> loading ...
+						</Fragment>
+					) : (
+						<Fragment>Login</Fragment>
+					)}
+				</button>
 			</form>
 			<p className='my-1'>
 				Don't have an account? <Link to='register'>Sign Up</Link>
@@ -63,11 +75,11 @@ const Login = ({ isAuthenticated, login }) => {
 
 Login.propTypes = {
 	login: PropTypes.func.isRequired,
-	isAuthenticated: PropTypes.bool
+	auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-	isAuthenticated: state.auth.isAuthenticated
+	auth: state.auth
 });
 
 export default connect(mapStateToProps, { login })(Login);

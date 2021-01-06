@@ -46,7 +46,13 @@ export const getPost = postId => async dispatch => {
 			type: GET_POST,
 			payload: res.data
 		});
-	} catch (err) {}
+	} catch (err) {
+		console.error(err.message);
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
 };
 
 export const addLike = postId => async dispatch => {

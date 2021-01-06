@@ -9,6 +9,7 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT,
+	SET_LOADING_AUTH,
 	CLEAR_PROFILE
 } from './types';
 
@@ -18,7 +19,7 @@ export const loadUser = () => async dispatch => {
 	}
 
 	try {
-		const res = await axios.get('api/auth');
+		const res = await axios.get('/api/auth');
 
 		dispatch({
 			type: USER_LOADED,
@@ -32,7 +33,12 @@ export const loadUser = () => async dispatch => {
 	}
 };
 
-export const register = ({ name, email, password }) => async dispatch => {
+export const register = (
+	{ name, email, password },
+	history
+) => async dispatch => {
+	dispatch(setLoading());
+
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -49,12 +55,20 @@ export const register = ({ name, email, password }) => async dispatch => {
 		const res = await axios.post('/api/users', body, config);
 
 		dispatch({
-			type: REGISTER_SUCCESS,
-			payload: res.data
+			type: REGISTER_SUCCESS
 		});
 
 		// load user after login
-		dispatch(loadUser());
+		// dispatch(loadUser());
+
+		history.push('/login');
+
+		dispatch(
+			setAlert(
+				'Registered successfully, login now to get started',
+				'success'
+			)
+		);
 	} catch (err) {
 		const errors = err.response.data.errors;
 
@@ -72,6 +86,8 @@ export const register = ({ name, email, password }) => async dispatch => {
 
 // login user
 export const login = (email, password) => async dispatch => {
+	dispatch(setLoading());
+
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -112,4 +128,10 @@ export const login = (email, password) => async dispatch => {
 export const logout = () => dispatch => {
 	dispatch({ type: LOGOUT });
 	dispatch({ type: CLEAR_PROFILE });
+};
+
+const setLoading = () => dispatch => {
+	dispatch({
+		type: SET_LOADING_AUTH
+	});
 };

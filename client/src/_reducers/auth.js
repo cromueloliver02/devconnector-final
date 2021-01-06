@@ -6,6 +6,7 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT,
+	SET_LOADING_AUTH,
 	ACCOUNT_DELETED
 } from '../_actions/types';
 
@@ -13,7 +14,7 @@ const initialState = {
 	token: localStorage.getItem('token'),
 	isAuthenticated: null,
 	user: null,
-	loading: true
+	loading: false
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -25,7 +26,6 @@ export default (state = initialState, { type, payload }) => {
 				user: payload,
 				loading: false
 			};
-		case REGISTER_SUCCESS:
 		case LOGIN_SUCCESS:
 			localStorage.setItem('token', payload.token);
 			return {
@@ -34,6 +34,7 @@ export default (state = initialState, { type, payload }) => {
 				isAuthenticated: true,
 				loading: false
 			};
+		case REGISTER_SUCCESS:
 		case REGISTER_FAIL:
 		case LOGIN_FAIL:
 		case AUTH_ERROR:
@@ -45,8 +46,12 @@ export default (state = initialState, { type, payload }) => {
 				token: null,
 				isAuthenticated: false,
 				loading: false,
-				// my custom code
 				user: null
+			};
+		case SET_LOADING_AUTH:
+			return {
+				...state,
+				loading: true
 			};
 		default:
 			return state;
