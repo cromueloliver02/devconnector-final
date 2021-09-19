@@ -33,56 +33,55 @@ export const loadUser = () => async dispatch => {
 	}
 };
 
-export const register = (
-	{ name, email, password },
-	history
-) => async dispatch => {
-	dispatch(setLoading());
+export const register =
+	({ name, email, password }, history) =>
+	async dispatch => {
+		dispatch(setLoading());
 
-	const config = {
-		headers: {
-			'Content-Type': 'application/json'
+		const config = {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		};
+
+		const body = {
+			name,
+			email,
+			password
+		};
+
+		try {
+			await axios.post('/api/users', body, config);
+
+			dispatch({
+				type: REGISTER_SUCCESS
+			});
+
+			// load user after login
+			// dispatch(loadUser());
+
+			history.push('/login');
+
+			dispatch(
+				setAlert(
+					'Registered successfully, login now to get started',
+					'success'
+				)
+			);
+		} catch (err) {
+			const errors = err.response.data.errors;
+
+			if (errors) {
+				errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+			}
+
+			// console.log(err.response.data);
+
+			dispatch({
+				type: REGISTER_FAIL
+			});
 		}
 	};
-
-	const body = {
-		name,
-		email,
-		password
-	};
-
-	try {
-		await axios.post('/api/users', body, config);
-
-		dispatch({
-			type: REGISTER_SUCCESS
-		});
-
-		// load user after login
-		// dispatch(loadUser());
-
-		history.push('/login');
-
-		dispatch(
-			setAlert(
-				'Registered successfully, login now to get started',
-				'success'
-			)
-		);
-	} catch (err) {
-		const errors = err.response.data.errors;
-
-		if (errors) {
-			errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-		}
-
-		// console.log(err.response.data);
-
-		dispatch({
-			type: REGISTER_FAIL
-		});
-	}
-};
 
 // login user
 export const login = (email, password) => async dispatch => {
@@ -100,7 +99,7 @@ export const login = (email, password) => async dispatch => {
 	};
 
 	try {
-		const res = await axios.post('api/auth', body, config);
+		const res = await axios.post('/api/auth', body, config);
 
 		dispatch({
 			type: LOGIN_SUCCESS,
